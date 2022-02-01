@@ -1,15 +1,24 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
+
+import { EnvironmentVariables } from 'src/configuration/environment-variables.interface';
 import { PostgresErrorCodes } from 'src/database/postgres-error-codes.enum';
 import { User } from 'src/users/entities/user.entity';
 
 import { UsersService } from 'src/users/users.service';
 import { RegisterDto } from './dto/register.dto';
+import { JwtTokenPayload } from './interfaces/jwt-token-payload.interface';
 
 @Injectable()
 export class AuthenticationService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private jwtService: JwtService,
+    private configService: ConfigService<EnvironmentVariables>,
+    private usersService: UsersService,
+  ) {}
 
   async register(registrationData: RegisterDto) {
     const hashedPassword = await bcrypt.hash(registrationData.password, 10);
@@ -61,5 +70,14 @@ export class AuthenticationService {
     if (!isPasswordMatching) {
       throw new HttpException('Invalid credentials', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  getToken(user: Express.User): string {
+    const payload: JwtTokenPayload = { sub: user.id };
+
+    return this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_SECRET'),
+      expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
+    });
   }
 }

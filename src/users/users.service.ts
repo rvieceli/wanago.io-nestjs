@@ -16,7 +16,20 @@ export class UsersService {
 
     if (!user) {
       throw new HttpException(
-        'User not found with this email',
+        'User with this email does not exist',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return user;
+  }
+
+  async getById(id: number) {
+    const user = await this.usersRepository.findOne(id);
+
+    if (!user) {
+      throw new HttpException(
+        'User with this id does not exist',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -27,7 +40,7 @@ export class UsersService {
   async create(user: CreateUserDto): Promise<User> {
     const newUser = this.usersRepository.create(user);
 
-    await this.usersRepository.save(user);
+    await this.usersRepository.save(newUser);
 
     return newUser;
   }
