@@ -16,12 +16,12 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  getAllPosts() {
+  async getAllPosts() {
     return this.postsService.getAllPosts();
   }
 
   @Get(':id')
-  getPostById(@Param('id') id: string) {
+  async getPostById(@Param('id') id: string) {
     return this.postsService.getPostById(+id);
   }
 
