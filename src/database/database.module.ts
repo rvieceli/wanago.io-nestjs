@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { EnvironmentVariables } from 'src/configuration/environment-variables.interface';
 
@@ -20,6 +21,7 @@ import { EnvironmentVariables } from 'src/configuration/environment-variables.in
           database: configService.get('DB_DATABASE'),
           entities: [join(__dirname, '..', '**', '*.entity{.ts,.js}')],
           synchronize: true,
+          namingStrategy: new SnakeNamingStrategy(),
         };
       },
     }),
