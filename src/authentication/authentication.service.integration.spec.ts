@@ -9,21 +9,9 @@ import { mockedConfigService } from 'src/utils/mocks/config.service';
 import { JwtService } from '@nestjs/jwt';
 import { mockedJwtService } from 'src/utils/mocks/jwt.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { mockedUser } from './mocks/user.mock';
 
 jest.mock('bcrypt');
-
-const mockedUser: User = {
-  id: 1,
-  email: 'some@user.com',
-  name: 'Some',
-  password: 'some$password',
-  address: {
-    id: 1,
-    street: 'Some street, 23',
-    city: 'City',
-    country: 'Country',
-  },
-};
 
 describe('AuthenticationService integration', () => {
   let authenticationService: AuthenticationService;

@@ -35,7 +35,7 @@ import { CategoriesModule } from './categories/categories.module';
     },
     {
       provide: APP_PIPE,
-      useValue: new ValidationPipe({ skipMissingProperties: true }),
+      useClass: ValidationPipe,
     },
     {
       provide: APP_INTERCEPTOR,
