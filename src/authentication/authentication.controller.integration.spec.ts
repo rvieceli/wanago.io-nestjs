@@ -9,7 +9,10 @@ import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
+import * as bcrypt from 'bcrypt';
+
 import * as request from 'supertest';
+import { mocked } from 'jest-mock';
 
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
@@ -18,6 +21,9 @@ import { mockedJwtService } from 'src/utils/mocks/jwt.service';
 import { AuthenticationController } from './authentication.controller';
 import { AuthenticationService } from './authentication.service';
 import { mockedUser } from './mocks/user.mock';
+import { LocalStrategy } from './strategies/local.strategy';
+
+jest.mock('bcrypt');
 
 describe('AuthenticationController', () => {
   let app: INestApplication;
@@ -30,15 +36,19 @@ describe('AuthenticationController', () => {
       ...mockedUser,
     });
 
+    mocked(bcrypt.compare).mockImplementation((a, b) => a === b);
+
     const usersRepository = {
       create: jest.fn().mockResolvedValue(userData),
       save: jest.fn().mockResolvedValue({}),
+      findOne: jest.fn().mockResolvedValue(userData),
     };
 
     const module = await Test.createTestingModule({
       controllers: [AuthenticationController],
       providers: [
         UsersService,
+        LocalStrategy,
         AuthenticationService,
         {
           provide: ConfigService,
@@ -46,7 +56,10 @@ describe('AuthenticationController', () => {
         },
         {
           provide: JwtService,
-          useValue: mockedJwtService,
+          useValue: {
+            ...mockedJwtService,
+            sign: () => 'jwt.token.signed',
+          },
         },
         {
           provide: getRepositoryToken(User),
@@ -95,6 +108,39 @@ describe('AuthenticationController', () => {
           .post('/authentication/register')
           .send({
             name: mockedUser.name,
+          })
+          .expect(400);
+      });
+    });
+  });
+
+  describe('when login', () => {
+    describe('and using valid credentials', () => {
+      it('should respond with user and jwt token', () => {
+        const expectedData = {
+          ...mockedUser,
+        };
+
+        delete expectedData.password;
+
+        return request(app.getHttpServer())
+          .post('/authentication/login')
+          .send({
+            email: mockedUser.email,
+            password: 'some$password',
+          })
+          .expect(200)
+          .expect({ user: expectedData, token: 'jwt.token.signed' });
+      });
+    });
+
+    describe('and using invalid credentials', () => {
+      it('should throw and error', () => {
+        return request(app.getHttpServer())
+          .post('/authentication/login')
+          .send({
+            email: 'wrong@email.com',
+            password: 'or$password',
           })
           .expect(400);
       });
