@@ -12,6 +12,7 @@ import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { ExceptionLoggerFilter } from './utils/filters/exception-logger.filter';
 import { HttpExceptionFilter } from './utils/filters/http-exception.filter';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { HttpExceptionFilter } from './utils/filters/http-exception.filter';
     PostsModule,
     UsersModule,
     AuthenticationModule,
+    CategoriesModule,
   ],
   controllers: [],
   providers: [

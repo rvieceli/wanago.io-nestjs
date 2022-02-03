@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 
 export class PostNotFoundException extends NotFoundException {
-  constructor(postId: number) {
-    super(`Post with id ${postId} not found`);
+  constructor(id: number) {
+    super(`Post with id ${id} not found.`);
   }
 }

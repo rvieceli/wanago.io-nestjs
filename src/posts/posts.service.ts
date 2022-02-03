@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CategoriesService } from 'src/categories/categories.service';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/createPost.dto';
@@ -12,15 +13,16 @@ export class PostsService {
   constructor(
     @InjectRepository(Post)
     private postsRepository: Repository<Post>,
+    private categoriesService: CategoriesService,
   ) {}
 
   async getAllPosts(): Promise<Post[]> {
-    return this.postsRepository.find({ relations: ['author'] });
+    return this.postsRepository.find({ relations: ['author', 'categories'] });
   }
 
   async getPostById(id: number): Promise<Post | undefined> {
     const post = await this.postsRepository.findOne(id, {
-      relations: ['author'],
+      relations: ['author', 'categories'],
     });
 
     if (!post) {
@@ -30,10 +32,17 @@ export class PostsService {
     return post;
   }
 
-  async createPost(post: CreatePostDto, user: User): Promise<Post> {
+  async createPost(postData: CreatePostDto, user: User): Promise<Post> {
+    const { categories: categoriesNames, ...fields } = postData;
+
+    const categories = await this.categoriesService.getCategoryByNameOrCreate(
+      categoriesNames,
+    );
+
     const newPost = this.postsRepository.create({
-      ...post,
+      ...fields,
       author: user,
+      categories,
     });
 
     await this.postsRepository.save(newPost);
@@ -41,16 +50,26 @@ export class PostsService {
     return newPost;
   }
 
-  async updatePost(id: number, post: UpdatePostDto): Promise<Post> {
+  async updatePost(id: number, postData: UpdatePostDto): Promise<Post> {
     const current = await this.postsRepository.findOne(id);
 
     if (!current) {
       throw new PostNotFoundException(id);
     }
 
+    const { categories: categoriesNames, ...fields } = postData;
+
+    if (categoriesNames) {
+      const categories = await this.categoriesService.getCategoryByNameOrCreate(
+        categoriesNames,
+      );
+
+      Object.assign(fields, { categories });
+    }
+
     const updated = await this.postsRepository.save({
       ...current,
-      ...post,
+      ...fields,
     });
 
     return updated;

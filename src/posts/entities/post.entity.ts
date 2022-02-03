@@ -1,6 +1,14 @@
 import { Transform } from 'class-transformer';
+import { Category } from 'src/categories/entities/category.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Post {
@@ -23,4 +31,8 @@ export class Post {
 
   @ManyToOne(() => User, (author) => author.posts)
   author: User;
+
+  @ManyToMany(() => Category, (category) => category.posts)
+  @JoinTable()
+  categories: Category[];
 }
