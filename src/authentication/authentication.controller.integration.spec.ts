@@ -1,6 +1,10 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -20,9 +24,11 @@ describe('AuthenticationController', () => {
   let userData: User;
 
   beforeEach(async () => {
-    userData = {
+    userData = new User();
+
+    Object.assign(userData, {
       ...mockedUser,
-    };
+    });
 
     const usersRepository = {
       create: jest.fn().mockResolvedValue(userData),
@@ -50,6 +56,10 @@ describe('AuthenticationController', () => {
           provide: APP_PIPE,
           useClass: ValidationPipe,
         },
+        {
+          provide: APP_INTERCEPTOR,
+          useClass: ClassSerializerInterceptor,
+        },
       ],
     }).compile();
 
@@ -59,11 +69,12 @@ describe('AuthenticationController', () => {
   });
 
   describe('when registering', () => {
-    describe('and using valida data', () => {
+    describe('and using valid data', () => {
       it('should respond with the data of the user without the password', () => {
         const expectedData = {
-          ...userData,
+          ...mockedUser,
         };
+
         delete expectedData.password;
 
         return request(app.getHttpServer())

@@ -29,7 +29,7 @@ export class AuthenticationService {
         password: hashedPassword,
       });
 
-      newUser.password = undefined;
+      // newUser.password = undefined;
 
       return newUser;
     } catch (error) {
@@ -53,7 +53,7 @@ export class AuthenticationService {
 
       await this.verifyPassword(password, user.password);
 
-      user.password = undefined;
+      // user.password = undefined;
 
       return user;
     } catch (error) {
