@@ -33,5 +33,5 @@ export class User {
   address: Address;
 
   @OneToMany(() => Post, (post) => post.author)
-  posts: Post[];
+  posts?: Post[];
 }

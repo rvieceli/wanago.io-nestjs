@@ -16,5 +16,5 @@ export class Address {
   country: string;
 
   @OneToOne(() => User, (user) => user.address)
-  user: User;
+  user?: User;
 }

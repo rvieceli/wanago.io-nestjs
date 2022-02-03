@@ -36,7 +36,7 @@ describe('AuthenticationService', () => {
   });
 
   describe('when creating a jwt token', () => {
-    it('should create a token', () => {
+    it('should create a string', () => {
       const user = { id: 1 } as User;
       const token = authenticationService.getToken(user);
       expect(typeof token).toEqual('string');
