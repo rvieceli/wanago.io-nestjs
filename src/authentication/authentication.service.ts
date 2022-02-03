@@ -49,7 +49,7 @@ export class AuthenticationService {
 
   async getAuthenticatedUser(email: string, password: string): Promise<User> {
     try {
-      const user = await this.usersService.getUserByEmail(email);
+      const user = await this.usersService.getByEmail(email);
 
       await this.verifyPassword(password, user.password);
 
@@ -72,7 +72,7 @@ export class AuthenticationService {
     }
   }
 
-  getToken(user: Express.User): string {
+  getToken(user: User): string {
     const payload: JwtTokenPayload = { sub: user.id };
 
     return this.jwtService.sign(payload, {
