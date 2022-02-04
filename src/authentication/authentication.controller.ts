@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Post,
@@ -13,7 +14,7 @@ import { RegisterDto } from './dto/register.dto';
 import { JwtAuthenticationGuard } from './guards/jwt-authentication.guard';
 import { LocalAuthenticationGuard } from './guards/local-authentication.guard';
 
-@Controller('authentication')
+@Controller('sessions')
 export class AuthenticationController {
   constructor(private authenticationService: AuthenticationService) {}
 
@@ -30,7 +31,7 @@ export class AuthenticationController {
 
   @HttpCode(200)
   @UseGuards(LocalAuthenticationGuard)
-  @Post('login')
+  @Post('')
   async login(@Req() request: Request) {
     const user = request.user;
     const token = this.authenticationService.getToken(user);
@@ -42,7 +43,7 @@ export class AuthenticationController {
   }
 
   @UseGuards(JwtAuthenticationGuard)
-  @Post('logout')
+  @Delete()
   logout() {
     // invalidate token putting in a blacklist?
     // only log user has done logout?
