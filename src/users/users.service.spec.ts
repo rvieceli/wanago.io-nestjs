@@ -26,8 +26,9 @@ describe('UsersService', () => {
   });
 
   describe('when getting a user by email', () => {
-    describe('and the user is mathed', () => {
+    describe('and the user is matched', () => {
       let user: User;
+
       beforeEach(() => {
         user = new User();
         findOne.mockResolvedValue(user);
@@ -48,6 +49,32 @@ describe('UsersService', () => {
         await expect(
           usersService.getByEmail('some@user.com'),
         ).rejects.toThrow();
+      });
+    });
+  });
+
+  describe('when getting a user by id', () => {
+    describe('and the user exists', () => {
+      let user: User;
+
+      beforeEach(() => {
+        user = new User();
+        findOne.mockResolvedValue(user);
+      });
+
+      it('should return the user', async () => {
+        const fetched = await usersService.getById(1);
+        expect(fetched).toEqual(user);
+      });
+    });
+
+    describe('and the user not exists', () => {
+      beforeEach(() => {
+        findOne.mockResolvedValue(undefined);
+      });
+
+      it('should throw an error', async () => {
+        await expect(usersService.getById(0)).rejects.toThrow();
       });
     });
   });
