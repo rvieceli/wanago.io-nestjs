@@ -17,7 +17,7 @@ export class CategoriesService {
     return this.categoriesRepository.find({ relations: ['posts'] });
   }
 
-  async getCategoryById(id: number) {
+  async getById(id: number) {
     const category = await this.categoriesRepository.findOne(id, {
       relations: ['posts'],
     });
@@ -29,7 +29,7 @@ export class CategoriesService {
     return category;
   }
 
-  async getCategoryByNameOrCreate(names: string[]): Promise<Category[]> {
+  async getByNamesOrCreate(names: string[]): Promise<Category[]> {
     const alreadyIn = await this.categoriesRepository.find({
       where: {
         name: Raw((alias) => `LOWER(${alias}) IN (:...names)`, {

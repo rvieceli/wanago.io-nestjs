@@ -20,7 +20,7 @@ export class CategoriesController {
 
   @Get(':id')
   async(@Param('id', ParseIntPipe) id: number) {
-    return this.categoriesService.getCategoryById(id);
+    return this.categoriesService.getById(id);
   }
 
   @Put(':id')

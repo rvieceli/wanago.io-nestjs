@@ -10,5 +10,5 @@ export class Category {
   name: string;
 
   @ManyToMany(() => Post, (post) => post.categories)
-  posts: Post[];
+  posts?: Post[];
 }

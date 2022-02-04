@@ -35,7 +35,7 @@ export class PostsService {
   async createPost(postData: CreatePostDto, user: User): Promise<Post> {
     const { categories: categoriesNames, ...fields } = postData;
 
-    const categories = await this.categoriesService.getCategoryByNameOrCreate(
+    const categories = await this.categoriesService.getByNamesOrCreate(
       categoriesNames,
     );
 
@@ -60,7 +60,7 @@ export class PostsService {
     const { categories: categoriesNames, ...fields } = postData;
 
     if (categoriesNames) {
-      const categories = await this.categoriesService.getCategoryByNameOrCreate(
+      const categories = await this.categoriesService.getByNamesOrCreate(
         categoriesNames,
       );
 
