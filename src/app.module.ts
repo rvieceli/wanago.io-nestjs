@@ -13,6 +13,8 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { ExceptionLoggerFilter } from './utils/filters/exception-logger.filter';
 import { HttpExceptionFilter } from './utils/filters/http-exception.filter';
 import { CategoriesModule } from './categories/categories.module';
+import { FilesModule } from './files/files.module';
+import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { CategoriesModule } from './categories/categories.module';
     UsersModule,
     AuthenticationModule,
     CategoriesModule,
+    CloudStorageModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [
