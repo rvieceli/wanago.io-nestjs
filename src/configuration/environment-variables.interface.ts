@@ -12,4 +12,8 @@ export interface EnvironmentVariables {
   AWS_S3_ACCESS_KEY: string;
   AWS_S3_SECRET_KEY: string;
   AWS_S3_BUCKET: string;
+
+  ELASTICSEARCH_NODE: string;
+  ELASTICSEARCH_USERNAME: string;
+  ELASTICSEARCH_PASSWORD: string;
 }

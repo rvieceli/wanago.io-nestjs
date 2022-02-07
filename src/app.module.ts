@@ -15,6 +15,7 @@ import { HttpExceptionFilter } from './utils/filters/http-exception.filter';
 import { CategoriesModule } from './categories/categories.module';
 import { FilesModule } from './files/files.module';
 import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
     CategoriesModule,
     CloudStorageModule,
     FilesModule,
+    SearchModule,
   ],
   controllers: [],
   providers: [

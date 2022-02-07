@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { randomUUID } from 'crypto';
 import { CloudStorageService } from 'src/cloud-storage/cloud-storage.service';
 import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 import { PrivateFile } from './entities/private-file.entity';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class PrivateFilesService {
   ) {
     const uploadResult = await this.cloudStorageService.upload({
       buffer: dataBuffer,
-      key: `private/${uuid()}-${filename}`,
+      key: `private/${randomUUID()}-${filename}`,
       contentType: contentType,
     });
 

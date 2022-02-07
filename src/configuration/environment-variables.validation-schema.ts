@@ -17,4 +17,8 @@ export const environmentVariableValidationSchema =
     AWS_S3_ACCESS_KEY: Joi.string().required(),
     AWS_S3_SECRET_KEY: Joi.string().required(),
     AWS_S3_BUCKET: Joi.string().required(),
+    //ELASTIC SEARCH
+    ELASTICSEARCH_NODE: Joi.string().uri().required(),
+    ELASTICSEARCH_USERNAME: Joi.string().required(),
+    ELASTICSEARCH_PASSWORD: Joi.string().required(),
   });

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { randomUUID } from 'crypto';
 import { CloudStorageService } from 'src/cloud-storage/cloud-storage.service';
 import { Repository } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 import { PublicFile } from './entities/public-file.entity';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class FilesService {
   ) {
     const uploadResult = await this.cloudStorageService.upload({
       buffer: dataBuffer,
-      key: `public/${uuid()}-${filename}`,
+      key: `public/${randomUUID()}-${filename}`,
       contentType,
       acl: 'public',
     });

@@ -2,11 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoriesService } from 'src/categories/categories.service';
 import { User } from 'src/users/entities/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
 import { Post } from './entities/post.entity';
 import { PostNotFoundException } from './exceptions/post-not-found.exception';
+import { PostsSearchService } from './posts-search.service';
 
 @Injectable()
 export class PostsService {
@@ -14,10 +15,26 @@ export class PostsService {
     @InjectRepository(Post)
     private postsRepository: Repository<Post>,
     private categoriesService: CategoriesService,
+    private postsSearchService: PostsSearchService,
   ) {}
 
   async getAllPosts(): Promise<Post[]> {
     return this.postsRepository.find({ relations: ['author', 'categories'] });
+  }
+
+  async searchForPosts(text: string) {
+    const results = await this.postsSearchService.search(text);
+
+    const ids = results.map((post) => post.id);
+
+    if (!ids.length) {
+      return [];
+    }
+
+    return this.postsRepository.find({
+      where: { id: In(ids) },
+      relations: ['author', 'categories'],
+    });
   }
 
   async getPostById(id: number): Promise<Post | undefined> {
@@ -47,11 +64,15 @@ export class PostsService {
 
     await this.postsRepository.save(newPost);
 
+    await this.postsSearchService.indexPost(newPost);
+
     return newPost;
   }
 
   async updatePost(id: number, postData: UpdatePostDto): Promise<Post> {
-    const current = await this.postsRepository.findOne(id);
+    const current = await this.postsRepository.findOne(id, {
+      relations: ['author'],
+    });
 
     if (!current) {
       throw new PostNotFoundException(id);
@@ -72,6 +93,14 @@ export class PostsService {
       ...fields,
     });
 
+    Object.assign(updated, {
+      author: current.author,
+    });
+
+    console.log({ updated });
+
+    await this.postsSearchService.update(updated);
+
     return updated;
   }
 
@@ -82,5 +111,6 @@ export class PostsService {
     }
 
     await this.postsRepository.delete(id);
+    await this.postsSearchService.remove(id);
   }
 }

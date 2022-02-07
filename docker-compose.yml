@@ -14,7 +14,40 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_DATABASE}
+    networks:
+      - postgres
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ELASTICSEARCH_USERNAME=$ELASTICSEARCH_USERNAME
+      - ELASTIC_PASSWORD=$ELASTICSEARCH_PASSWORD
+      - 'http.cors.allow-origin=*'
+      - 'http.cors.enabled=true'
+      - 'http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization'
+      - 'http.cors.allow-credentials=true'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - elastic
 
 volumes:
   pgdata:
   mongodata:
+  elasticsearch-data:
+    driver: local
+
+networks:
+  postgres:
+    driver: bridge
+  elastic:
+    driver: bridge
