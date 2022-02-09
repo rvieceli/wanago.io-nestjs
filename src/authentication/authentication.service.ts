@@ -10,7 +10,8 @@ import { User } from 'src/users/entities/user.entity';
 
 import { UsersService } from 'src/users/users.service';
 import { RegisterDto } from './dto/register.dto';
-import { JwtTokenPayload } from './interfaces/jwt-token-payload.interface';
+import { JwtRefreshPayload } from './interfaces/jwt-refresh-payload.interface';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthenticationService {
@@ -72,12 +73,41 @@ export class AuthenticationService {
     }
   }
 
-  getToken(user: User): string {
-    const payload: JwtTokenPayload = { sub: user.id };
+  getToken(user: User, verifier?: number): string {
+    const payload: JwtPayload = { sub: user.id, verifier };
 
     return this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_SECRET'),
       expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
     });
+  }
+
+  getRefreshToken(token: string): string {
+    const payload: JwtRefreshPayload = { token };
+
+    return this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_REFRESH_SECRET'),
+      expiresIn: this.configService.get('JWT_REFRESH_EXPIRATION_TIME'),
+    });
+  }
+
+  async getTokens(user: User, userAgent: string) {
+    const refreshTokenId = await this.usersService.createRefreshTokenId(
+      user.id,
+      userAgent,
+    );
+
+    const token = this.getToken(user, refreshTokenId.id);
+
+    const refreshToken = this.getRefreshToken(refreshTokenId.token);
+
+    return {
+      token,
+      refreshToken,
+    };
+  }
+
+  async logOut(verifier: number) {
+    this.usersService.removeRefreshToken(verifier);
   }
 }

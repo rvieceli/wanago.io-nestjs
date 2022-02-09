@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Address } from './address.entity';
+import { RefreshToken } from './refresh-token.entity';
 
 @Entity()
 export class User {
@@ -28,7 +29,6 @@ export class User {
   password: string;
 
   @OneToOne(() => Address, {
-    eager: true,
     cascade: true,
   })
   @JoinColumn()
@@ -46,4 +46,8 @@ export class User {
 
   @OneToMany(() => PrivateFile, (file) => file.owner)
   files?: PrivateFile[];
+
+  @Exclude()
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
+  refreshTokens?: RefreshToken[];
 }

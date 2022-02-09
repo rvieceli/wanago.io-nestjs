@@ -7,6 +7,8 @@ export interface EnvironmentVariables {
 
   JWT_SECRET: string;
   JWT_EXPIRATION_TIME: string;
+  JWT_REFRESH_SECRET: string;
+  JWT_REFRESH_EXPIRATION_TIME: string;
 
   AWS_S3_REGION: string;
   AWS_S3_ACCESS_KEY: string;

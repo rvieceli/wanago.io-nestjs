@@ -6,11 +6,15 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
+import { Repository } from 'typeorm';
+
 import { FilesService } from 'src/files/files.service';
 import { PrivateFilesService } from 'src/files/private-files.service';
-import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
+import { RefreshTokensService } from './refresh-tokens.service';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +23,7 @@ export class UsersService {
     private usersRepository: Repository<User>,
     private filesService: FilesService,
     private privateFilesService: PrivateFilesService,
+    private refreshTokensService: RefreshTokensService,
   ) {}
 
   async getByEmail(email: string): Promise<User> {
@@ -135,5 +140,19 @@ export class UsersService {
         };
       }),
     );
+  }
+
+  async createRefreshTokenId(userId: number, userAgent: string) {
+    const token = randomUUID();
+
+    return this.refreshTokensService.create({
+      user: { id: userId },
+      token,
+      userAgent,
+    });
+  }
+
+  async removeRefreshToken(idOrToken: string | number) {
+    await this.refreshTokensService.delete(idOrToken);
   }
 }

@@ -97,8 +97,6 @@ export class PostsService {
       author: current.author,
     });
 
-    console.log({ updated });
-
     await this.postsSearchService.update(updated);
 
     return updated;
