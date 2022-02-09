@@ -4,6 +4,7 @@ import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -29,6 +30,7 @@ export class Post {
   })
   category?: string;
 
+  @Index()
   @ManyToOne(() => User, (author) => author.posts)
   author: User;
 
