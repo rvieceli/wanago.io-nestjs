@@ -18,7 +18,7 @@ export class PostsSearchService {
         body: {
           id: post.id,
           title: post.title,
-          content: post.content,
+          paragraphs: post.paragraphs,
           authorId: post.author.id,
         },
       },
@@ -42,7 +42,7 @@ export class PostsSearchService {
           doc: {
             id: post.id,
             title: post.title,
-            content: post.content,
+            paragraphs: post.paragraphs,
             authorId: post.author.id,
           },
           doc_as_upsert: true,
@@ -59,7 +59,7 @@ export class PostsSearchService {
         query: {
           multi_match: {
             query: text,
-            fields: ['title', 'content'],
+            fields: ['title', 'paragraphs'],
           },
         },
       },

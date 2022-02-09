@@ -1,6 +1,12 @@
+import { IsString } from 'class-validator';
+
 export class UpdatePostDto {
-  content: string;
+  @IsString()
   title: string;
-  category: string;
+
+  @IsString({ each: true })
+  paragraphs: string[];
+
+  @IsString({ each: true })
   categories: string[];
 }

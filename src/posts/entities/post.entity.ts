@@ -19,8 +19,8 @@ export class Post {
   @Column()
   title: string;
 
-  @Column()
-  content: string;
+  @Column('text', { array: true })
+  paragraphs: string[];
 
   @Column({ nullable: true })
   @Transform(({ value }) => {
