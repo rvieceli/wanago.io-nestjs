@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtAuthenticationGuard } from 'src/authentication/guards/jwt-authentication.guard';
+import { PaginationParamsDto } from 'src/utils/dto/pagination-params.dto';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
 import { PostsService } from './posts.service';
@@ -22,11 +23,18 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async getAllPosts(@Query('search') search: string) {
+  async getAllPosts(
+    @Query('search') search: string,
+    @Query() { limit, offset, cursor }: PaginationParamsDto,
+  ) {
     if (search) {
-      return this.postsService.searchForPosts(search);
+      return this.postsService.searchForPosts(search, {
+        limit,
+        offset,
+        cursor,
+      });
     }
-    return this.postsService.getAllPosts();
+    return this.postsService.getAllPosts({ limit, offset, cursor });
   }
 
   @Get(':id')

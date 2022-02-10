@@ -1,5 +1,7 @@
+import { RequestEvent } from '@elastic/elasticsearch';
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { PaginationParamsDto } from 'src/utils/dto/pagination-params.dto';
 import { Post } from './entities/post.entity';
 import { PostSearchBody } from './interfaces/post-search-body.interface';
 import { PostSearchResult } from './interfaces/post-search-result.interface';
@@ -7,6 +9,7 @@ import { PostSearchResult } from './interfaces/post-search-result.interface';
 @Injectable()
 export class PostsSearchService {
   private index = 'posts';
+  private fields = ['title', 'paragraphs'];
 
   constructor(private elasticsearchService: ElasticsearchService) {}
 
@@ -52,21 +55,55 @@ export class PostsSearchService {
     );
   }
 
-  async search(text: string) {
-    const { body } = await this.elasticsearchService.search<PostSearchResult>({
-      index: this.index,
-      body: {
-        query: {
-          multi_match: {
-            query: text,
-            fields: ['title', 'paragraphs'],
+  async search(text: string, pagination: PaginationParamsDto) {
+    const query = {
+      multi_match: {
+        query: text,
+        fields: this.fields,
+      },
+    };
+    const sort = {
+      id: {
+        order: 'asc',
+      },
+    };
+
+    if (pagination.cursor) {
+      const response = await this.elasticsearchService.search<PostSearchResult>(
+        {
+          index: this.index,
+          size: pagination.limit,
+          body: {
+            query,
+            sort,
+            search_after: [pagination.cursor],
           },
         },
+      );
+
+      return this.format(response.body);
+    }
+
+    const response = await this.elasticsearchService.search<PostSearchResult>({
+      index: this.index,
+      from: pagination.offset,
+      size: pagination.limit,
+      body: {
+        query,
+        sort,
       },
     });
 
-    const hits = body.hits.hits;
+    return this.format(response.body);
+  }
 
-    return hits.map((item) => item._source);
+  private format(body: RequestEvent<PostSearchResult>['body'], count?: number) {
+    const hits = body.hits.hits;
+    const results = hits.map((item) => item._source);
+
+    return {
+      results,
+      count: count || body.hits.total.value,
+    };
   }
 }

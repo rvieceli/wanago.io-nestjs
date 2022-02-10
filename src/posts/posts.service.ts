@@ -2,7 +2,9 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CategoriesService } from 'src/categories/categories.service';
 import { User } from 'src/users/entities/user.entity';
-import { In, Repository } from 'typeorm';
+import { PAGE_LIMIT } from 'src/utils/constants';
+import { PaginationParamsDto } from 'src/utils/dto/pagination-params.dto';
+import { In, Repository, FindManyOptions, MoreThan } from 'typeorm';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
 import { Post } from './entities/post.entity';
@@ -18,23 +20,66 @@ export class PostsService {
     private postsSearchService: PostsSearchService,
   ) {}
 
-  async getAllPosts(): Promise<Post[]> {
-    return this.postsRepository.find({ relations: ['author', 'categories'] });
+  async getAllPosts(pagination: PaginationParamsDto) {
+    const relations = ['author', 'categories'];
+    const order: FindManyOptions<Post>['order'] = { id: 'ASC' };
+    const take =
+      pagination.limit && pagination.limit <= PAGE_LIMIT
+        ? pagination.limit
+        : PAGE_LIMIT;
+
+    if (pagination.cursor) {
+      const count = await this.postsRepository.count();
+      const items = await this.postsRepository.find({
+        where: { id: MoreThan(pagination.cursor) },
+        relations,
+        order,
+        take,
+      });
+
+      return {
+        items,
+        count,
+      };
+    }
+
+    const [items, count] = await this.postsRepository.findAndCount({
+      relations,
+      order,
+      skip: pagination.offset,
+      take,
+    });
+
+    return {
+      items,
+      count,
+    };
   }
 
-  async searchForPosts(text: string) {
-    const results = await this.postsSearchService.search(text);
+  async searchForPosts(text: string, pagination: PaginationParamsDto) {
+    const { results, count } = await this.postsSearchService.search(
+      text,
+      pagination,
+    );
 
     const ids = results.map((post) => post.id);
 
     if (!ids.length) {
-      return [];
+      return {
+        items: [],
+        count,
+      };
     }
 
-    return this.postsRepository.find({
+    const items = await this.postsRepository.find({
       where: { id: In(ids) },
       relations: ['author', 'categories'],
     });
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getPostById(id: number): Promise<Post | undefined> {
