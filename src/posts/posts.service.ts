@@ -20,7 +20,7 @@ export class PostsService {
     private postsSearchService: PostsSearchService,
   ) {}
 
-  async getAllPosts(pagination: PaginationParamsDto) {
+  async getAllPosts(pagination: PaginationParamsDto = { limit: PAGE_LIMIT }) {
     const relations = ['author', 'categories'];
     const order: FindManyOptions<Post>['order'] = { id: 'ASC' };
     const take =
@@ -56,7 +56,10 @@ export class PostsService {
     };
   }
 
-  async searchForPosts(text: string, pagination: PaginationParamsDto) {
+  async searchForPosts(
+    text: string,
+    pagination: PaginationParamsDto = { limit: PAGE_LIMIT },
+  ) {
     const { results, count } = await this.postsSearchService.search(
       text,
       pagination,

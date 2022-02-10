@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Raw, Repository } from 'typeorm';
+import { PAGE_LIMIT } from 'src/utils/constants';
+import { PaginationParamsDto } from 'src/utils/dto/pagination-params.dto';
+import { FindManyOptions, MoreThan, Raw, Repository } from 'typeorm';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 import { Category } from './entities/category.entity';
@@ -13,8 +15,39 @@ export class CategoriesService {
     private categoriesRepository: Repository<Category>,
   ) {}
 
-  async getAllCategories() {
-    return this.categoriesRepository.find({ relations: ['posts'] });
+  async getAllCategories(
+    pagination: PaginationParamsDto = { limit: PAGE_LIMIT },
+  ) {
+    const order: FindManyOptions<Category>['order'] = { id: 'ASC' };
+    const take =
+      pagination.limit && pagination.limit <= PAGE_LIMIT
+        ? pagination.limit
+        : PAGE_LIMIT;
+
+    if (pagination.cursor) {
+      const count = await this.categoriesRepository.count();
+      const items = await this.categoriesRepository.find({
+        where: { id: MoreThan(pagination.cursor) },
+        order,
+        take,
+      });
+
+      return {
+        items,
+        count,
+      };
+    }
+
+    const [items, count] = await this.categoriesRepository.findAndCount({
+      order,
+      skip: pagination.offset,
+      take,
+    });
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getById(id: number) {

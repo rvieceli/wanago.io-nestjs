@@ -1,6 +1,7 @@
 import { RequestEvent } from '@elastic/elasticsearch';
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { PAGE_LIMIT } from 'src/utils/constants';
 import { PaginationParamsDto } from 'src/utils/dto/pagination-params.dto';
 import { Post } from './entities/post.entity';
 import { PostSearchBody } from './interfaces/post-search-body.interface';
@@ -55,7 +56,10 @@ export class PostsSearchService {
     );
   }
 
-  async search(text: string, pagination: PaginationParamsDto) {
+  async search(
+    text: string,
+    pagination: PaginationParamsDto = { limit: PAGE_LIMIT },
+  ) {
     const query = {
       multi_match: {
         query: text,

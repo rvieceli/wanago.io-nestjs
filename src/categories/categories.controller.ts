@@ -5,7 +5,9 @@ import {
   Param,
   ParseIntPipe,
   Put,
+  Query,
 } from '@nestjs/common';
+import { PaginationParamsDto } from 'src/utils/dto/pagination-params.dto';
 import { CategoriesService } from './categories.service';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
@@ -14,8 +16,10 @@ export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
   @Get()
-  async getAllCategories() {
-    return this.categoriesService.getAllCategories();
+  async getAllCategories(
+    @Query() { limit, offset, cursor }: PaginationParamsDto,
+  ) {
+    return this.categoriesService.getAllCategories({ limit, offset, cursor });
   }
 
   @Get(':id')
