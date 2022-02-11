@@ -1,5 +1,12 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Cache } from 'cache-manager';
 import { CategoriesService } from 'src/categories/categories.service';
 import { User } from 'src/users/entities/user.entity';
 import { PAGE_LIMIT } from 'src/utils/constants';
@@ -10,6 +17,7 @@ import { UpdatePostDto } from './dto/updatePost.dto';
 import { Post } from './entities/post.entity';
 import { PostNotFoundException } from './exceptions/post-not-found.exception';
 import { PostsSearchService } from './posts-search.service';
+import { GET_POSTS_CACHE_KEY } from './posts.constants';
 
 @Injectable()
 export class PostsService {
@@ -18,6 +26,8 @@ export class PostsService {
     private postsRepository: Repository<Post>,
     private categoriesService: CategoriesService,
     private postsSearchService: PostsSearchService,
+    @Inject(CACHE_MANAGER)
+    private cacheManager: Cache,
   ) {}
 
   async getAllPosts(pagination: PaginationParamsDto = { limit: PAGE_LIMIT }) {
@@ -111,8 +121,8 @@ export class PostsService {
     });
 
     await this.postsRepository.save(newPost);
-
     await this.postsSearchService.indexPost(newPost);
+    await this.clearCache();
 
     return newPost;
   }
@@ -146,6 +156,7 @@ export class PostsService {
     });
 
     await this.postsSearchService.update(updated);
+    await this.clearCache();
 
     return updated;
   }
@@ -158,5 +169,16 @@ export class PostsService {
 
     await this.postsRepository.delete(id);
     await this.postsSearchService.remove(id);
+    await this.clearCache();
+  }
+
+  async clearCache() {
+    const keys: string[] = await this.cacheManager.store.keys();
+
+    keys.forEach((key) => {
+      if (key.startsWith(GET_POSTS_CACHE_KEY)) {
+        this.cacheManager.del(key);
+      }
+    });
   }
 }
