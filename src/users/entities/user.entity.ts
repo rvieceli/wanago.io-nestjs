@@ -1,4 +1,5 @@
 import { Exclude } from 'class-transformer';
+import { Comment } from 'src/comments/entities/comment.entity';
 import { PrivateFile } from 'src/files/entities/private-file.entity';
 import { PublicFile } from 'src/files/entities/public-file.entity';
 import { Post } from 'src/posts/entities/post.entity';
@@ -50,4 +51,7 @@ export class User {
   @Exclude()
   @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
   refreshTokens?: RefreshToken[];
+
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comments?: Comment[];
 }

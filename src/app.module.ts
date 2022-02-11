@@ -16,6 +16,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { FilesModule } from './files/files.module';
 import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
 import { SearchModule } from './search/search.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SearchModule } from './search/search.module';
     CloudStorageModule,
     FilesModule,
     SearchModule,
+    CommentsModule,
   ],
   controllers: [],
   providers: [
