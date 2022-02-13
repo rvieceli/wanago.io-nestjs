@@ -1,17 +1,19 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import { EnvironmentVariables } from 'src/configuration/environment-variables.interface';
+import {
+  ConfigurationModule,
+  ConfigurationService,
+} from 'src/configuration/configuration.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService<EnvironmentVariables>) => {
+      imports: [ConfigurationModule],
+      inject: [ConfigurationService],
+      useFactory: (configService: ConfigurationService) => {
         return {
           type: 'postgres',
           host: configService.get('DB_HOST'),

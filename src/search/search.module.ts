@@ -1,17 +1,16 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
-import { EnvironmentVariables } from 'src/configuration/environment-variables.interface';
+import {
+  ConfigurationModule,
+  ConfigurationService,
+} from 'src/configuration/configuration.module';
 
 @Module({
   imports: [
-    ConfigModule,
     ElasticsearchModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (
-        configService: ConfigService<EnvironmentVariables>,
-      ) => ({
+      imports: [ConfigurationModule],
+      inject: [ConfigurationService],
+      useFactory: async (configService: ConfigurationService) => ({
         node: configService.get('ELASTICSEARCH_NODE'),
         auth: {
           username: configService.get('ELASTICSEARCH_USERNAME'),

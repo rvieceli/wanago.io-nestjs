@@ -1,17 +1,35 @@
 import { CacheModule, Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import * as redisStore from 'cache-manager-redis-store';
+import type { RedisClientOptions } from 'redis';
+
+import { CategoriesModule } from 'src/categories/categories.module';
+import { SearchModule } from 'src/search/search.module';
+
 import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { CategoriesModule } from 'src/categories/categories.module';
 import { PostsSearchService } from './posts-search.service';
-import { SearchModule } from 'src/search/search.module';
+import {
+  ConfigurationModule,
+  ConfigurationService,
+} from 'src/configuration/configuration.module';
 
 @Module({
   imports: [
-    CacheModule.register({
-      ttl: 10,
-      max: 100,
+    CacheModule.registerAsync<RedisClientOptions>({
+      imports: [ConfigurationModule],
+      inject: [ConfigurationService],
+      useFactory: (configService: ConfigurationService) => ({
+        store: redisStore,
+        socket: {
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_POST'),
+        },
+        ttl: 10,
+        max: 100,
+      }),
     }),
     TypeOrmModule.forFeature([Post]),
     CategoriesModule,

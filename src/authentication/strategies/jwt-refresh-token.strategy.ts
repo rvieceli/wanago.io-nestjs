@@ -1,13 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { EnvironmentVariables } from 'src/configuration/environment-variables.interface';
 import { JwtRefreshPayload } from '../interfaces/jwt-refresh-payload.interface';
 import * as jwt from 'jsonwebtoken';
 import { RefreshTokensService } from 'src/users/refresh-tokens.service';
 import { BadTokenException } from '../exceptions/bad-token.exception';
+import { ConfigurationService } from 'src/configuration/configuration.service';
 
 export const JWT_REFRESH_TOKEN_STRATEGY_NAME = 'jwt-refresh-token';
 
@@ -17,7 +16,7 @@ export class JwtRefreshTokenStrategy extends PassportStrategy(
   JWT_REFRESH_TOKEN_STRATEGY_NAME,
 ) {
   constructor(
-    private configService: ConfigService<EnvironmentVariables>,
+    private configService: ConfigurationService,
     private refreshTokensService: RefreshTokensService,
   ) {
     super({

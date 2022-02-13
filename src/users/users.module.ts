@@ -7,13 +7,13 @@ import { UsersController } from './users.controller';
 import { RefreshTokensService } from './refresh-tokens.service';
 import { RefreshToken } from './entities/refresh-token.entity';
 import { Address } from './entities/address.entity';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigurationModule } from 'src/configuration/configuration.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Address, RefreshToken]),
     FilesModule,
-    ConfigModule,
+    ConfigurationModule,
   ],
   providers: [UsersService, RefreshTokensService],
   exports: [UsersService, RefreshTokensService],

@@ -18,4 +18,7 @@ export interface EnvironmentVariables {
   ELASTICSEARCH_NODE: string;
   ELASTICSEARCH_USERNAME: string;
   ELASTICSEARCH_PASSWORD: string;
+
+  REDIS_HOST: string;
+  REDIS_POST: number;
 }

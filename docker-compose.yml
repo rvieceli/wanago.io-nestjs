@@ -40,6 +40,14 @@ services:
     networks:
       - elastic
 
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - 6379:6379
+    networks:
+      - redis
+
 volumes:
   pgdata:
   mongodata:
@@ -50,4 +58,6 @@ networks:
   postgres:
     driver: bridge
   elastic:
+    driver: bridge
+  redis:
     driver: bridge

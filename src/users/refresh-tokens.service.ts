@@ -1,18 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EnvironmentVariables } from 'src/configuration/environment-variables.interface';
 import { Repository } from 'typeorm';
 import { CreateRefreshTokenDto } from './dto/create-refresh-token.dto';
 import { RefreshToken } from './entities/refresh-token.entity';
 import ms = require('ms');
+import { ConfigurationService } from 'src/configuration/configuration.service';
 
 @Injectable()
 export class RefreshTokensService {
   constructor(
     @InjectRepository(RefreshToken)
     private refreshTokensRepository: Repository<RefreshToken>,
-    private configService: ConfigService<EnvironmentVariables>,
+    private configService: ConfigurationService,
   ) {}
 
   async create(data: CreateRefreshTokenDto) {

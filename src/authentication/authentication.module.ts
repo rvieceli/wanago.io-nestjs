@@ -7,12 +7,17 @@ import { UsersModule } from 'src/users/users.module';
 import { AuthenticationService } from './authentication.service';
 import { LocalStrategy } from './strategies/local.strategy';
 import { AuthenticationController } from './authentication.controller';
-import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtRefreshTokenStrategy } from './strategies/jwt-refresh-token.strategy';
+import { ConfigurationModule } from 'src/configuration/configuration.module';
 
 @Module({
-  imports: [ConfigModule, PassportModule, JwtModule.register({}), UsersModule],
+  imports: [
+    ConfigurationModule,
+    PassportModule,
+    JwtModule.register({}),
+    UsersModule,
+  ],
   providers: [
     AuthenticationService,
     LocalStrategy,

@@ -23,4 +23,7 @@ export const environmentVariableValidationSchema =
     ELASTICSEARCH_NODE: Joi.string().uri().required(),
     ELASTICSEARCH_USERNAME: Joi.string().required(),
     ELASTICSEARCH_PASSWORD: Joi.string().required(),
+
+    REDIS_HOST: Joi.string().required(),
+    REDIS_POST: Joi.number().required(),
   });

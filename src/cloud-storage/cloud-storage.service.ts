@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { S3 } from 'aws-sdk';
-import { EnvironmentVariables } from 'src/configuration/environment-variables.interface';
+import { ConfigurationService } from 'src/configuration/configuration.service';
 
 interface UploadParams {
   buffer: Buffer;
@@ -14,7 +13,7 @@ interface UploadParams {
 export class CloudStorageService {
   private instance: S3;
 
-  constructor(private configService: ConfigService<EnvironmentVariables>) {
+  constructor(private configService: ConfigurationService) {
     this.instance = new S3({
       credentials: {
         accessKeyId: configService.get('AWS_S3_ACCESS_KEY'),

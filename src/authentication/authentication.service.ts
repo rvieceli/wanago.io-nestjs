@@ -1,10 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
 
-import { EnvironmentVariables } from 'src/configuration/environment-variables.interface';
 import { PostgresErrorCodes } from 'src/database/postgres-error-codes.enum';
 import { User } from 'src/users/entities/user.entity';
 
@@ -12,12 +10,13 @@ import { UsersService } from 'src/users/users.service';
 import { RegisterDto } from './dto/register.dto';
 import { JwtRefreshPayload } from './interfaces/jwt-refresh-payload.interface';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { ConfigurationService } from 'src/configuration/configuration.service';
 
 @Injectable()
 export class AuthenticationService {
   constructor(
     private jwtService: JwtService,
-    private configService: ConfigService<EnvironmentVariables>,
+    private configService: ConfigurationService,
     private usersService: UsersService,
   ) {}
 
