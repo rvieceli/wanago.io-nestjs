@@ -17,6 +17,9 @@ import { FilesModule } from './files/files.module';
 import { CloudStorageModule } from './cloud-storage/cloud-storage.module';
 import { SearchModule } from './search/search.module';
 import { CommentsModule } from './comments/comments.module';
+import { EmailModule } from './email/email.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { EmailScheduleModule } from './email-schedule/email-schedule.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { CommentsModule } from './comments/comments.module';
     FilesModule,
     SearchModule,
     CommentsModule,
+    EmailModule,
+    ScheduleModule.forRoot(),
+    EmailScheduleModule,
   ],
   controllers: [],
   providers: [

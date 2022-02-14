@@ -21,4 +21,8 @@ export interface EnvironmentVariables {
 
   REDIS_HOST: string;
   REDIS_POST: number;
+
+  EMAIL_SERVICE: string;
+  EMAIL_USER: string;
+  EMAIL_PASSWORD: string;
 }
