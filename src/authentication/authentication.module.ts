@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 
@@ -14,9 +14,9 @@ import { ConfigurationModule } from 'src/configuration/configuration.module';
 @Module({
   imports: [
     ConfigurationModule,
-    PassportModule,
+    PassportModule.register({}),
     JwtModule.register({}),
-    UsersModule,
+    forwardRef(() => UsersModule),
   ],
   providers: [
     AuthenticationService,
@@ -25,5 +25,6 @@ import { ConfigurationModule } from 'src/configuration/configuration.module';
     JwtRefreshTokenStrategy,
   ],
   controllers: [AuthenticationController],
+  exports: [PassportModule],
 })
 export class AuthenticationModule {}

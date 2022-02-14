@@ -15,6 +15,7 @@ import {
   ConfigurationModule,
   ConfigurationService,
 } from 'src/configuration/configuration.module';
+import { AuthenticationModule } from 'src/authentication/authentication.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import {
     TypeOrmModule.forFeature([Post]),
     CategoriesModule,
     SearchModule,
+    AuthenticationModule,
   ],
   providers: [PostsService, PostsSearchService],
   controllers: [PostsController],

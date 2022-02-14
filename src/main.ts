@@ -7,5 +7,5 @@ async function bootstrap() {
   await app.listen(3000);
 }
 
-// bootstrap();
-Cluster.register(4, bootstrap);
+bootstrap();
+// Cluster.register(1, bootstrap);
