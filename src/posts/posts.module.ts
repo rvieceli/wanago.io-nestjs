@@ -15,7 +15,6 @@ import {
   ConfigurationModule,
   ConfigurationService,
 } from 'src/configuration/configuration.module';
-import { AuthenticationModule } from 'src/authentication/authentication.module';
 
 @Module({
   imports: [
@@ -26,7 +25,7 @@ import { AuthenticationModule } from 'src/authentication/authentication.module';
         store: redisStore,
         socket: {
           host: configService.get('REDIS_HOST'),
-          port: configService.get('REDIS_POST'),
+          port: configService.get('REDIS_PORT'),
         },
         ttl: 10,
         max: 100,
@@ -35,7 +34,6 @@ import { AuthenticationModule } from 'src/authentication/authentication.module';
     TypeOrmModule.forFeature([Post]),
     CategoriesModule,
     SearchModule,
-    AuthenticationModule,
   ],
   providers: [PostsService, PostsSearchService],
   controllers: [PostsController],

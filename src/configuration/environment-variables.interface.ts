@@ -20,7 +20,7 @@ export interface EnvironmentVariables {
   ELASTICSEARCH_PASSWORD: string;
 
   REDIS_HOST: string;
-  REDIS_POST: number;
+  REDIS_PORT: number;
 
   EMAIL_SERVICE: string;
   EMAIL_USER: string;
