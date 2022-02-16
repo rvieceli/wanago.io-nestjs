@@ -25,4 +25,6 @@ export interface EnvironmentVariables {
   EMAIL_SERVICE: string;
   EMAIL_USER: string;
   EMAIL_PASSWORD: string;
+
+  GRAPHQL_PLAYGROUND?: number;
 }

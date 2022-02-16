@@ -15,6 +15,7 @@ import {
   ConfigurationModule,
   ConfigurationService,
 } from 'src/configuration/configuration.module';
+import { PostsResolver } from './posts.resolver';
 
 @Module({
   imports: [
@@ -35,7 +36,7 @@ import {
     CategoriesModule,
     SearchModule,
   ],
-  providers: [PostsService, PostsSearchService],
+  providers: [PostsService, PostsSearchService, PostsResolver],
   controllers: [PostsController],
 })
 export class PostsModule {}
