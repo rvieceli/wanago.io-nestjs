@@ -11,6 +11,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  RelationId,
 } from 'typeorm';
 
 @Entity()
@@ -35,6 +36,9 @@ export class Post {
   @Index()
   @ManyToOne(() => User, (author) => author.posts)
   author: User;
+
+  @RelationId((post: Post) => post.author)
+  author_id?: number;
 
   @ManyToMany(() => Category, (category) => category.posts)
   @JoinTable()

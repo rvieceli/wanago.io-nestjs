@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { FilesService } from 'src/files/files.service';
 import { PrivateFilesService } from 'src/files/private-files.service';
@@ -50,6 +50,10 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async getByIds(ids: number[]) {
+    return this.usersRepository.find({ where: { id: In(ids) } });
   }
 
   async create(user: CreateUserDto): Promise<User> {

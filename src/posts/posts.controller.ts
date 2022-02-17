@@ -42,7 +42,9 @@ export class PostsController {
         cursor,
       });
     }
-    return this.postsService.getAllPosts({ limit, offset, cursor });
+    return this.postsService.getAllPosts({
+      pagination: { limit, offset, cursor },
+    });
   }
 
   @Get(':id')

@@ -2,10 +2,23 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type User {
+  id: Int!
+  email: String!
+  name: String!
+}
+
+type Category {
+  id: Int!
+  name: String!
+}
+
 type Post {
   id: Int!
   title: String!
   paragraphs: [String!]!
+  author: User!
+  categories: [Category!]!
 }
 
 type Query {

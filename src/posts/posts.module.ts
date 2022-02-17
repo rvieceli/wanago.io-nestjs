@@ -16,6 +16,7 @@ import {
   ConfigurationService,
 } from 'src/configuration/configuration.module';
 import { PostsResolver } from './posts.resolver';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { PostsResolver } from './posts.resolver';
     TypeOrmModule.forFeature([Post]),
     CategoriesModule,
     SearchModule,
+    UsersModule,
   ],
   providers: [PostsService, PostsSearchService, PostsResolver],
   controllers: [PostsController],

@@ -19,6 +19,13 @@ import { PostNotFoundException } from './exceptions/post-not-found.exception';
 import { PostsSearchService } from './posts-search.service';
 import { GET_POSTS_CACHE_KEY } from './posts.constants';
 
+type PostRelations = 'author' | 'categories';
+
+interface GetAllPosts {
+  pagination?: PaginationParamsDto;
+  relations?: PostRelations[] | string[];
+}
+
 @Injectable()
 export class PostsService {
   constructor(
@@ -30,8 +37,12 @@ export class PostsService {
     private cacheManager: Cache,
   ) {}
 
-  async getAllPosts(pagination: PaginationParamsDto = { limit: PAGE_LIMIT }) {
-    const relations = ['author', 'categories'];
+  async getAllPosts(params: GetAllPosts = {}) {
+    const {
+      pagination = { limit: PAGE_LIMIT },
+      relations = ['author', 'categories'],
+    } = params;
+
     const order: FindManyOptions<Post>['order'] = { id: 'ASC' };
     const take =
       pagination.limit && pagination.limit <= PAGE_LIMIT

@@ -7,10 +7,7 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 
 import { PostsModule } from './posts/posts.module';
 import { DatabaseModule } from './database/database.module';
-import {
-  ConfigurationModule,
-  ConfigurationService,
-} from './configuration/configuration.module';
+import { ConfigurationModule } from './configuration/configuration.module';
 import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { ExceptionLoggerFilter } from './utils/filters/exception-logger.filter';
@@ -24,9 +21,7 @@ import { EmailModule } from './email/email.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EmailScheduleModule } from './email-schedule/email-schedule.module';
 import { ChatModule } from './chat/chat.module';
-import { GraphQLModule } from '@nestjs/graphql';
-import { join } from 'path';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ApolloModule } from './apollo/apollo.module';
 
 @Module({
   imports: [
@@ -44,15 +39,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
     ScheduleModule.forRoot(),
     EmailScheduleModule,
     ChatModule,
-    GraphQLModule.forRootAsync<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      imports: [ConfigurationModule],
-      inject: [ConfigurationService],
-      useFactory: (configService: ConfigurationService) => ({
-        playground: Boolean(configService.get('GRAPHQL_PLAYGROUND')),
-        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      }),
-    }),
+    ApolloModule,
   ],
   controllers: [],
   providers: [

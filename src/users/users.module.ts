@@ -8,6 +8,7 @@ import { RefreshTokensService } from './refresh-tokens.service';
 import { RefreshToken } from './entities/refresh-token.entity';
 import { Address } from './entities/address.entity';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
+import { UsersLoader } from './loaders/users.loader';
 
 @Module({
   imports: [
@@ -15,8 +16,8 @@ import { ConfigurationModule } from 'src/configuration/configuration.module';
     FilesModule,
     ConfigurationModule,
   ],
-  providers: [UsersService, RefreshTokensService],
-  exports: [UsersService, RefreshTokensService],
+  providers: [UsersService, RefreshTokensService, UsersLoader],
+  exports: [UsersService, RefreshTokensService, UsersLoader],
   controllers: [UsersController],
 })
 export class UsersModule {}

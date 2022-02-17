@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Post } from 'src/posts/entities/post.entity';
 import { PAGE_LIMIT } from 'src/utils/constants';
 import { PaginationParamsDto } from 'src/utils/dto/pagination-params.dto';
-import { FindManyOptions, MoreThan, Raw, Repository } from 'typeorm';
+import { FindManyOptions, In, MoreThan, Raw, Repository } from 'typeorm';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 import { Category } from './entities/category.entity';
@@ -60,6 +61,18 @@ export class CategoriesService {
     }
 
     return category;
+  }
+
+  getByIds(ids: number[]) {
+    return this.categoriesRepository.find({ where: { id: In(ids) } });
+  }
+
+  getByPostId(postId: number) {
+    return this.categoriesRepository
+      .createQueryBuilder()
+      .relation(Post, 'categories')
+      .of(postId)
+      .loadMany();
   }
 
   async getByNamesOrCreate(names: string[]): Promise<Category[]> {
