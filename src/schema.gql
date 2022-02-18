@@ -18,8 +18,14 @@ type Post {
   title: String!
   paragraphs: [String!]!
   author: User!
+  author_id: Int!
   categories: [Category!]!
+  created_at: Timestamp!
+  scheduled_date: Timestamp
 }
+
+"""`Date` type as UNIX integer"""
+scalar Timestamp
 
 type Query {
   posts: [Post!]!
@@ -33,6 +39,7 @@ input CreatePostInput {
   title: String!
   paragraphs: [String!]!
   categories: [String!]!
+  scheduled_date: Timestamp
 }
 
 type Subscription {

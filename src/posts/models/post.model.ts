@@ -16,6 +16,15 @@ export class Post {
   @Field()
   author: User;
 
+  @Field(() => Int)
+  author_id: number;
+
   @Field(() => [Category])
   categories: Category[];
+
+  @Field()
+  created_at: Date;
+
+  @Field({ nullable: true })
+  scheduled_date?: Date;
 }

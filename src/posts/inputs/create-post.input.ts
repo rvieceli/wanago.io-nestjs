@@ -10,4 +10,7 @@ export class CreatePostInput {
 
   @Field(() => [String])
   categories: string[];
+
+  @Field({ nullable: true })
+  scheduled_date?: Date;
 }

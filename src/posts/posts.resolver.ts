@@ -15,7 +15,6 @@ import { GqlJwtAuthenticationGuard } from 'src/authentication/guards/gql-jwt-aut
 import { User } from 'src/users/models/user.model';
 import { CreatePostInput } from './inputs/create-post.input';
 import { Post } from './models/post.model';
-import { Post as PostEntity } from './entities/post.entity';
 import { PostsService } from './posts.service';
 import { GraphQLResolveInfo } from 'graphql';
 
@@ -47,7 +46,7 @@ export class PostsResolver {
 
   @ResolveField('author', () => User)
   async getAuthor(
-    @Parent() post: PostEntity,
+    @Parent() post: Post,
     @Context('usersLoader') usersLoader: UsersLoader,
   ) {
     if (post.author) {

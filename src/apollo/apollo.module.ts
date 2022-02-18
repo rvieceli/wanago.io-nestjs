@@ -9,6 +9,7 @@ import {
 import { UsersLoader } from 'src/users/loaders/users.loader';
 import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/users.service';
+import { TimestampScalar } from './scalars/timestamp.scalar';
 
 @Module({
   imports: [
@@ -20,7 +21,6 @@ import { UsersService } from 'src/users/users.service';
         configService: ConfigurationService,
         usersService: UsersService,
       ) => ({
-        playground: Boolean(configService.get('GRAPHQL_PLAYGROUND')),
         autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
         subscriptions: {
           'graphql-ws': {
@@ -33,8 +33,12 @@ import { UsersService } from 'src/users/users.service';
         context: () => ({
           usersLoader: new UsersLoader(usersService),
         }),
+        // buildSchemaOptions: {
+        //   dateScalarMode: 'timestamp',
+        // },
       }),
     }),
   ],
+  providers: [TimestampScalar],
 })
 export class ApolloModule {}
