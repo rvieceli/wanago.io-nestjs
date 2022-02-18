@@ -22,6 +22,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { EmailScheduleModule } from './email-schedule/email-schedule.module';
 import { ChatModule } from './chat/chat.module';
 import { ApolloModule } from './apollo/apollo.module';
+import { PubSubModule } from './pub-sub/pub-sub.module';
+import { CustomClassSerializerInterceptorInterceptor } from './utils/interceptors/custom-class-serializer-interceptor.interceptor';
 
 @Module({
   imports: [
@@ -40,6 +42,7 @@ import { ApolloModule } from './apollo/apollo.module';
     EmailScheduleModule,
     ChatModule,
     ApolloModule,
+    PubSubModule,
   ],
   controllers: [],
   providers: [
@@ -57,7 +60,7 @@ import { ApolloModule } from './apollo/apollo.module';
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: ClassSerializerInterceptor,
+      useClass: CustomClassSerializerInterceptorInterceptor,
     },
   ],
 })

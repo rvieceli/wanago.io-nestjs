@@ -34,3 +34,7 @@ input CreatePostInput {
   paragraphs: [String!]!
   categories: [String!]!
 }
+
+type Subscription {
+  postAdded: Post!
+}

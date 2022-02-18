@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import {
   Args,
   Context,
@@ -8,6 +8,7 @@ import {
   Query,
   ResolveField,
   Resolver,
+  Subscription,
 } from '@nestjs/graphql';
 import { Request } from 'express';
 import { GqlJwtAuthenticationGuard } from 'src/authentication/guards/gql-jwt-authentication.guard';
@@ -20,12 +21,17 @@ import { GraphQLResolveInfo } from 'graphql';
 
 import { relationsFromInfo } from 'src/utils/graphql/relations-from-info';
 import { UsersLoader } from 'src/users/loaders/users.loader';
+import { PUB_SUB } from 'src/pub-sub/pub-sub.module';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
+
+const POST_ADDED_EVENT = 'postAdded';
 
 @Resolver(() => Post)
 export class PostsResolver {
   constructor(
     private postsService: PostsService,
-    private usersLoader: UsersLoader,
+    @Inject(PUB_SUB)
+    private pubSub: RedisPubSub,
   ) {}
 
   @Query(() => [Post])
@@ -40,11 +46,14 @@ export class PostsResolver {
   }
 
   @ResolveField('author', () => User)
-  async getAuthor(@Parent() post: PostEntity) {
+  async getAuthor(
+    @Parent() post: PostEntity,
+    @Context('usersLoader') usersLoader: UsersLoader,
+  ) {
     if (post.author) {
       return post.author;
     }
-    return this.usersLoader.batchUsers.load(post.author_id);
+    return usersLoader.batchUsers.load(post.author_id);
   }
 
   @Mutation(() => Post)
@@ -53,6 +62,18 @@ export class PostsResolver {
     @Args('input') createPostInput: CreatePostInput,
     @Context('req') request: Request,
   ) {
-    return this.postsService.createPost(createPostInput, request.user);
+    const newPost = await this.postsService.createPost(
+      createPostInput,
+      request.user,
+    );
+
+    await this.pubSub.publish(POST_ADDED_EVENT, { postAdded: newPost });
+
+    return newPost;
+  }
+
+  @Subscription(() => Post)
+  postAdded() {
+    return this.pubSub.asyncIterator(POST_ADDED_EVENT);
   }
 }
