@@ -54,4 +54,10 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.author)
   comments?: Comment[];
+
+  @Column({ nullable: true })
+  two_factors_authentication_secret?: string;
+
+  @Column({ nullable: true })
+  is_2fa_enabled?: boolean;
 }

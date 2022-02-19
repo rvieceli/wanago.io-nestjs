@@ -159,4 +159,16 @@ export class UsersService {
   async removeRefreshToken(idOrToken: string | number) {
     await this.refreshTokensService.delete(idOrToken);
   }
+
+  async set2faSecret(id: number, secret: string) {
+    await this.usersRepository.update(id, {
+      two_factors_authentication_secret: secret,
+    });
+  }
+
+  async enable2fa(id: number) {
+    await this.usersRepository.update(id, {
+      is_2fa_enabled: true,
+    });
+  }
 }

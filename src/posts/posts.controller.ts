@@ -15,6 +15,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { Jwt2faGuard } from 'src/authentication/guards/jwt-2fa.guard';
 import { JwtAuthenticationGuard } from 'src/authentication/guards/jwt-authentication.guard';
 import { PaginationParamsDto } from 'src/utils/dto/pagination-params.dto';
 import { HttpCacheInterceptor } from 'src/utils/interceptors/http-cache.interceptor';
@@ -53,7 +54,7 @@ export class PostsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(Jwt2faGuard)
   async createPost(@Body() post: CreatePostDto, @Req() request: Request) {
     return this.postsService.createPost(post, request.user);
   }

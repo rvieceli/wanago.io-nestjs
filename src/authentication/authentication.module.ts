@@ -10,6 +10,7 @@ import { AuthenticationController } from './authentication.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtRefreshTokenStrategy } from './strategies/jwt-refresh-token.strategy';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
+import { Jwt2faStrategy } from './strategies/jwt-2fa-strategy';
 
 @Module({
   imports: [
@@ -23,8 +24,9 @@ import { ConfigurationModule } from 'src/configuration/configuration.module';
     LocalStrategy,
     JwtStrategy,
     JwtRefreshTokenStrategy,
+    Jwt2faStrategy,
   ],
   controllers: [AuthenticationController],
-  exports: [PassportModule],
+  exports: [PassportModule, AuthenticationService],
 })
 export class AuthenticationModule {}

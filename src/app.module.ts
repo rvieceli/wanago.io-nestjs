@@ -20,6 +20,7 @@ import { ChatModule } from './chat/chat.module';
 import { ApolloModule } from './apollo/apollo.module';
 import { PubSubModule } from './pub-sub/pub-sub.module';
 import { CustomClassSerializerInterceptorInterceptor } from './utils/interceptors/custom-class-serializer-interceptor.interceptor';
+import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-factor-authentication.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { CustomClassSerializerInterceptorInterceptor } from './utils/interceptor
     ChatModule,
     ApolloModule,
     PubSubModule,
+    TwoFactorAuthenticationModule,
   ],
   controllers: [],
   providers: [

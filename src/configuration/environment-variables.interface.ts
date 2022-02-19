@@ -25,4 +25,7 @@ export interface EnvironmentVariables {
   EMAIL_SERVICE: string;
   EMAIL_USER: string;
   EMAIL_PASSWORD: string;
+
+  TWO_FACTOR_AUTHENTICATION_APP_NAME: string;
+  TWO_FACTOR_EXPIRATION_TIME: string;
 }

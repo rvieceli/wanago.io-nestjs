@@ -73,11 +73,26 @@ export class AuthenticationService {
   }
 
   getToken(user: User, verifier?: number): string {
-    const payload: JwtPayload = { sub: user.id, verifier };
+    const payload: JwtPayload = {
+      sub: user.id,
+      verifier,
+      is2fa: user.is_2fa_enabled,
+    };
 
     return this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_SECRET'),
       expiresIn: this.configService.get('JWT_EXPIRATION_TIME'),
+    });
+  }
+
+  get2faTemporaryToken(user: User): string {
+    const payload: JwtPayload = {
+      sub: user.id,
+    };
+
+    return this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_SECRET'),
+      expiresIn: this.configService.get('TWO_FACTOR_EXPIRATION_TIME'),
     });
   }
 

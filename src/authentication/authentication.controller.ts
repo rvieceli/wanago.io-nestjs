@@ -37,6 +37,13 @@ export class AuthenticationController {
     const user = request.user;
     const userAgent = request.get('User-Agent');
 
+    if (user.is_2fa_enabled) {
+      return {
+        token: this.authenticationService.get2faTemporaryToken(user),
+        next_action: '2FA_AUTH',
+      };
+    }
+
     return this.authenticationService.getTokens(user, userAgent);
   }
 
