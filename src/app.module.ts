@@ -1,5 +1,5 @@
 import { Module, ValidationPipe } from '@nestjs/common';
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 
 import { PostsModule } from './posts/posts.module';
 import { DatabaseModule } from './database/database.module';
@@ -19,8 +19,9 @@ import { EmailScheduleModule } from './email-schedule/email-schedule.module';
 import { ChatModule } from './chat/chat.module';
 import { ApolloModule } from './apollo/apollo.module';
 import { PubSubModule } from './pub-sub/pub-sub.module';
-import { CustomClassSerializerInterceptorInterceptor } from './utils/interceptors/custom-class-serializer-interceptor.interceptor';
 import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-factor-authentication.module';
+import { QueueModule } from './queue/queue.module';
+import { OptimizeModule } from './optimize/optimize.module';
 
 @Module({
   imports: [
@@ -41,6 +42,8 @@ import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-f
     ApolloModule,
     PubSubModule,
     TwoFactorAuthenticationModule,
+    QueueModule,
+    OptimizeModule,
   ],
   controllers: [],
   providers: [
@@ -55,10 +58,6 @@ import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-f
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CustomClassSerializerInterceptorInterceptor,
     },
   ],
 })
