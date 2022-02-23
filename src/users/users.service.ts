@@ -171,4 +171,15 @@ export class UsersService {
       is_2fa_enabled: true,
     });
   }
+
+  async saveVerificationCode(email: string, verification_code: string) {
+    await this.usersRepository.update({ email }, { verification_code });
+  }
+
+  async markEmailAsConfirmed(email: string) {
+    await this.usersRepository.update(
+      { email },
+      { verification_code: null, is_email_confirmed: true },
+    );
+  }
 }

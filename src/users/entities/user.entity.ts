@@ -60,4 +60,10 @@ export class User {
 
   @Column({ nullable: true })
   is_2fa_enabled?: boolean;
+
+  @Column({ default: false })
+  is_email_confirmed?: boolean;
+
+  @Column({ nullable: true })
+  verification_code?: string;
 }

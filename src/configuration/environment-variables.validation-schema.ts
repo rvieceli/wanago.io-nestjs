@@ -14,6 +14,9 @@ export const environmentVariableValidationSchema =
     JWT_EXPIRATION_TIME: Joi.string().required(),
     JWT_REFRESH_SECRET: Joi.string().required(),
     JWT_REFRESH_EXPIRATION_TIME: Joi.string().required(),
+    JWT_EMAIL_VERIFICATION_SECRET: Joi.string().required(),
+    JWT_EMAIL_VERIFICATION_EXPIRATION_TIME: Joi.string().required(),
+    EMAIL_VERIFICATION_URL: Joi.string().required(),
     //AWS_S3
     AWS_S3_REGION: Joi.string().required(),
     AWS_S3_ACCESS_KEY: Joi.string().required(),

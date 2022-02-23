@@ -22,6 +22,7 @@ import { PubSubModule } from './pub-sub/pub-sub.module';
 import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-factor-authentication.module';
 import { QueueModule } from './queue/queue.module';
 import { OptimizeModule } from './optimize/optimize.module';
+import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { OptimizeModule } from './optimize/optimize.module';
     TwoFactorAuthenticationModule,
     QueueModule,
     OptimizeModule,
+    EmailConfirmationModule,
   ],
   controllers: [],
   providers: [

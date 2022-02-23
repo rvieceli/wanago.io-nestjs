@@ -11,6 +11,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtRefreshTokenStrategy } from './strategies/jwt-refresh-token.strategy';
 import { ConfigurationModule } from 'src/configuration/configuration.module';
 import { Jwt2faStrategy } from './strategies/jwt-2fa-strategy';
+import { EmailConfirmationModule } from 'src/email-confirmation/email-confirmation.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { Jwt2faStrategy } from './strategies/jwt-2fa-strategy';
     PassportModule,
     JwtModule.register({}),
     UsersModule,
+    EmailConfirmationModule,
   ],
   providers: [
     AuthenticationService,

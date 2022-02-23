@@ -1,14 +1,19 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   HttpCode,
   Post,
+  Query,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { EmailConfirmationService } from 'src/email-confirmation/email-confirmation.service';
+import { UsersService } from 'src/users/users.service';
 import { AuthenticationService } from './authentication.service';
 import { RegisterDto } from './dto/register.dto';
 import { JwtAuthenticationGuard } from './guards/jwt-authentication.guard';
@@ -16,8 +21,13 @@ import JwtRefreshTokenGuard from './guards/jwt-refresh-token.guard';
 import { LocalAuthenticationGuard } from './guards/local-authentication.guard';
 
 @Controller('sessions')
+@UseInterceptors(ClassSerializerInterceptor)
 export class AuthenticationController {
-  constructor(private authenticationService: AuthenticationService) {}
+  constructor(
+    private authenticationService: AuthenticationService,
+    private usersService: UsersService,
+    private emailConfirmationService: EmailConfirmationService,
+  ) {}
 
   @UseGuards(JwtAuthenticationGuard)
   @Get()
@@ -26,8 +36,24 @@ export class AuthenticationController {
   }
 
   @Post('register')
-  async register(@Body() registrationData: RegisterDto) {
-    return this.authenticationService.register(registrationData);
+  async register(
+    @Body() registrationData: RegisterDto,
+    @Query('verification_mode') verification_mode: 'link' | 'code' = 'link',
+  ) {
+    const user = await this.authenticationService.register(registrationData);
+
+    switch (verification_mode) {
+      case 'link':
+        await this.emailConfirmationService.sendVerificationLink(
+          registrationData.email,
+        );
+        break;
+      case 'code':
+        await this.emailConfirmationService.sendVerificationCode(user.email);
+        break;
+    }
+
+    return user;
   }
 
   @HttpCode(200)
