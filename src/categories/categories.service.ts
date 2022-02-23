@@ -123,4 +123,12 @@ export class CategoriesService {
 
     return updated;
   }
+
+  async deleteCategory(id: number) {
+    const { affected } = await this.categoriesRepository.softDelete(id);
+
+    if (!affected) {
+      throw new CategoryNotFoundException(id);
+    }
+  }
 }

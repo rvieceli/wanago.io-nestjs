@@ -17,10 +17,14 @@ import {
 import { Request } from 'express';
 import { Jwt2faGuard } from 'src/authentication/guards/jwt-2fa.guard';
 import { JwtAuthenticationGuard } from 'src/authentication/guards/jwt-authentication.guard';
+import { PermissionGuard } from 'src/users/guards/permission.guard';
+import { RoleGuard } from 'src/users/guards/role.guard';
+import { Role } from 'src/users/role.enum';
 import { PaginationParamsDto } from 'src/utils/dto/pagination-params.dto';
 import { HttpCacheInterceptor } from 'src/utils/interceptors/http-cache.interceptor';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
+import { PostPermission } from './permission.enum';
 import { GET_POSTS_CACHE_KEY } from './posts.constants';
 import { PostsService } from './posts.service';
 
@@ -69,7 +73,8 @@ export class PostsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthenticationGuard)
+  @UseGuards(RoleGuard(Role.Admin))
+  @UseGuards(PermissionGuard(PostPermission.DeletePost))
   async deletePost(@Param('id', ParseIntPipe) id: number) {
     this.postsService.deletePost(id);
   }

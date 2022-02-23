@@ -13,6 +13,8 @@ import {
 } from 'typeorm';
 import { Address } from './address.entity';
 import { RefreshToken } from './refresh-token.entity';
+import { Role } from '../role.enum';
+import { Permission } from '../permission.type';
 
 @Entity()
 export class User {
@@ -66,4 +68,20 @@ export class User {
 
   @Column({ nullable: true })
   verification_code?: string;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    array: true,
+    default: [Role.User],
+  })
+  roles: Role[];
+
+  @Column({
+    type: 'enum',
+    enum: Permission,
+    array: true,
+    default: [],
+  })
+  permissions?: Permission[];
 }
