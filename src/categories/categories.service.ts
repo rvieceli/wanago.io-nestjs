@@ -16,6 +16,11 @@ export class CategoriesService {
     private categoriesRepository: Repository<Category>,
   ) {}
 
+  /**
+   * Returns all categories
+   * @param pagination cursor and offset pagination
+   * @returns a list of categories
+   */
   async getAllCategories(
     pagination: PaginationParamsDto = { limit: PAGE_LIMIT },
   ) {
