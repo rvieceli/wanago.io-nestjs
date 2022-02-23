@@ -23,6 +23,7 @@ import { TwoFactorAuthenticationModule } from './two-factor-authentication/two-f
 import { QueueModule } from './queue/queue.module';
 import { OptimizeModule } from './optimize/optimize.module';
 import { EmailConfirmationModule } from './email-confirmation/email-confirmation.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { EmailConfirmationModule } from './email-confirmation/email-confirmation
     QueueModule,
     OptimizeModule,
     EmailConfirmationModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [
